@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CyberTerm | Advanced Security Terminal</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="matrix-background"></div>
+    <div class="scanlines"></div>
+    <div class="terminal-container">
+        <div class="terminal-header">
+            <div class="terminal-title">ADVANCED SECURITY TERMINAL v3.7.2</div>
+            <div class="terminal-controls">
+                <span class="control minimize"></span>
+                <span class="control maximize"></span>
+                <span class="control close"></span>
+            </div>
+        </div>
+        
+        <div class="terminal-grid">
+            <!-- Main Terminal -->
+            <div class="terminal-window main-terminal">
+                <div class="window-header">
+                    <span class="window-title">COMMAND EXECUTION</span>
+                    <span class="status-indicator online">ACTIVE</span>
+                </div>
+                <div class="terminal-content" id="main-terminal">
+                    <div class="terminal-line">Initializing secure connection...</div>
+                    <div class="terminal-line">Establishing encrypted tunnel to remote server...</div>
+                    <div class="terminal-line success">Connection established.</div>
+                    <div class="terminal-line">
+                        <span class="prompt">root@cyberterm:~#</span>
+                        <span class="cursor blink">█</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Network Monitor -->
+            <div class="terminal-window network-monitor">
+                <div class="window-header">
+                    <span class="window-title">NETWORK MONITOR</span>
+                    <span class="status-indicator online">ACTIVE</span>
+                </div>
+                <div class="terminal-content" id="network-monitor">
+                    <div class="network-visualization">
+                        <canvas id="network-canvas"></canvas>
+                    </div>
+                    <div class="network-stats">
+                        <div class="stat-item">
+                            <span class="stat-label">ACTIVE CONNECTIONS:</span>
+                            <span class="stat-value" id="active-connections">7</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">PACKETS ANALYZED:</span>
+                            <span class="stat-value" id="packets-analyzed">1,458</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">INTRUSION ATTEMPTS:</span>
+                            <span class="stat-value warning" id="intrusion-attempts">3</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- System Status -->
+            <div class="terminal-window system-status">
+                <div class="window-header">
+                    <span class="window-title">SYSTEM STATUS</span>
+                    <span class="status-indicator online">ACTIVE</span>
+                </div>
+                <div class="terminal-content" id="system-status">
+                    <div class="status-grid">
+                        <div class="status-item">
+                            <div class="status-label">CPU LOAD</div>
+                            <div class="progress-bar">
+                                <div class="progress" id="cpu-load" style="width: 42%"></div>
+                            </div>
+                            <div class="status-value">42%</div>
+                        </div>
+                        <div class="status-item">
+                            <div class="status-label">MEMORY</div>
+                            <div class="progress-bar">
+                                <div class="progress" id="memory-usage" style="width: 68%"></div>
+                            </div>
+                            <div class="status-value">68%</div>
+                        </div>
+                        <div class="status-item">
+                            <div class="status-label">DISK I/O</div>
+                            <div class="progress-bar">
+                                <div class="progress" id="disk-io" style="width: 23%"></div>
+                            </div>
+                            <div class="status-value">23%</div>
+                        </div>
+                        <div class="status-item">
+                            <div class="status-label">NETWORK</div>
+                            <div class="progress-bar">
+                                <div class="progress" id="network-usage" style="width: 51%"></div>
+                            </div>
+                            <div class="status-value">51%</div>
+                        </div>
+                    </div>
+                    <div class="system-log">
+                        <div class="log-header">SYSTEM LOG</div>
+                        <div class="log-content" id="system-log-content">
+                            <div class="log-entry">[22:01:45] System scan complete - No threats detected</div>
+                            <div class="log-entry">[22:00:32] Firewall rules updated</div>
+                            <div class="log-entry warning">[21:58:17] Unusual traffic pattern detected from 192.168.1.45</div>
+                            <div class="log-entry">[21:57:03] Automatic security update applied</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Target Database -->
+            <!-- Hidden for now to give more space to other panels -->
+            <!-- <div class="terminal-window target-database">
+                <div class="window-header">
+                    <span class="window-title">TARGET DATABASE</span>
+                    <span class="status-indicator online">ACTIVE</span>
+                </div>
+                <div class="terminal-content" id="target-database">
+                    <div class="target-list">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>IP ADDRESS</th>
+                                    <th>STATUS</th>
+                                    <th>SERVICES</th>
+                                    <th>VULN</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="target-item">
+                                    <td>192.168.1.1</td>
+                                    <td><span class="status online">ONLINE</span></td>
+                                    <td>SSH, HTTP, FTP</td>
+                                    <td>2</td>
+                                </tr>
+                                <tr class="target-item active">
+                                    <td>192.168.1.45</td>
+                                    <td><span class="status online">ONLINE</span></td>
+                                    <td>HTTP, HTTPS, SMB</td>
+                                    <td>5</td>
+                                </tr>
+                                <tr class="target-item">
+                                    <td>192.168.1.72</td>
+                                    <td><span class="status offline">OFFLINE</span></td>
+                                    <td>--</td>
+                                    <td>--</td>
+                                </tr>
+                                <tr class="target-item">
+                                    <td>192.168.1.103</td>
+                                    <td><span class="status online">ONLINE</span></td>
+                                    <td>HTTP, DNS</td>
+                                    <td>1</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="target-details">
+                        <div class="details-header">TARGET DETAILS: 192.168.1.45</div>
+                        <div class="details-content">
+                            <div class="detail-item">
+                                <span class="detail-label">OS:</span>
+                                <span class="detail-value">Linux 5.4.0-42</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">HOSTNAME:</span>
+                                <span class="detail-value">srv-web-prod</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">OPEN PORTS:</span>
+                                <span class="detail-value">22, 80, 443, 445, 3306</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">LAST SCAN:</span>
+                                <span class="detail-value">2025-05-06 21:58:17</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div> -->
+        </div>
+        
+        <div class="terminal-footer">
+            <div class="footer-status">
+                <span class="status-item">SECURE CONNECTION</span>
+                <span class="status-item">ENCRYPTION: AES-256</span>
+                <span class="status-item">SESSION ID: 7FB52E8A</span>
+            </div>
+            <div class="footer-time" id="terminal-time">22:02:01 UTC</div>
+        </div>
+    </div>
+
+    <div class="modal" id="security-breach">
+        <div class="modal-content">
+            <div class="alert-header">SECURITY BREACH DETECTED</div>
+            <div class="alert-body">
+                <div class="alert-icon">⚠</div>
+                <div class="alert-message">Unauthorized access attempt detected from external network. Initiating countermeasures and logging all activity.</div>
+            </div>
+            <div class="alert-progress">
+                <div class="progress-bar">
+                    <div class="progress" id="countermeasure-progress"></div>
+                </div>
+                <div class="progress-label">DEPLOYING COUNTERMEASURES</div>
+            </div>
+        </div>
+    </div>
+
+    <audio id="keypress-sound" src="sounds/keypress.mp3" preload="auto"></audio>
+    <audio id="enter-sound" src="sounds/enter.mp3" preload="auto"></audio>
+    <audio id="alert-sound" src="sounds/alert.mp3" preload="auto"></audio>
+    <audio id="ambient-sound" src="sounds/ambient.mp3" preload="auto" loop></audio>
+
+    <script src="script.js"></script>
+</body>
+</html>
