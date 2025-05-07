@@ -48,6 +48,15 @@ const commandFragments = {
         'netstat -tuln',
         'tcpdump -i eth0',
         'wireshark -k -i ',
+        'arp-scan --localnet',
+        'nbtscan -r 192.168.1.0/24',
+        'smbclient -L //192.168.1.45',
+        'enum4linux -a 192.168.1.45',
+        'snmpwalk -v2c -c public 192.168.1.45',
+        'onesixtyone -c community.txt 192.168.1.45',
+        'dnsrecon -d example.com -t axfr',
+        'theharvester -d example.com -b all',
+        'recon-ng -w workspace'
     ],
     
     // System commands
@@ -64,6 +73,14 @@ const commandFragments = {
         'systemctl status ',
         'journalctl -xe',
         'dmesg | tail',
+        'top -b -n 1',
+        'free -h',
+        'df -h',
+        'netstat -tulpn',
+        'lsof -i',
+        'ifconfig',
+        'route -n',
+        'iptables -L -n -v'
     ],
     
     // Security and exploitation
@@ -78,6 +95,16 @@ const commandFragments = {
         'nikto -h ',
         'gobuster dir ',
         'wpscan --url ',
+        'dirb http://192.168.1.45/',
+        'wfuzz -c -z file,wordlist.txt --hc 404 http://192.168.1.45/FUZZ',
+        'cewl -w wordlist.txt http://192.168.1.45',
+        'patator ssh_login host=192.168.1.45 user=admin password=FILE0 0=passwords.txt',
+        'medusa -h 192.168.1.45 -u admin -P passwords.txt -M ssh',
+        'ncrack -p 22 -U users.txt -P passwords.txt 192.168.1.45',
+        'crackmapexec smb 192.168.1.45 -u users.txt -p passwords.txt',
+        'responder -I eth0',
+        'bettercap -iface eth0',
+        'mitmproxy -T --host'
     ],
     
     // Programming and scripting
@@ -93,6 +120,15 @@ const commandFragments = {
         'scp ',
         'curl -X POST ',
         'wget ',
+        'pip install ',
+        'go build ',
+        'rustc ',
+        'javac ',
+        'mvn clean install',
+        'gradle build',
+        'composer install',
+        'yarn add ',
+        'gem install '
     ],
     
     // File paths
@@ -233,6 +269,36 @@ const responses = {
         'Command executed successfully.',
         'Operation completed with status code 0.',
         'Process finished.'
+    ],
+    'compiling': [
+        'Compiling source files...',
+        'Linking object files...',
+        'Generating binary...',
+        'Optimizing code...',
+        'Stripping debug symbols...',
+        'Creating executable...',
+        'Build completed successfully.'
+    ],
+    'scanning': [
+        'Initializing scan...',
+        'Probing target system...',
+        'Analyzing network topology...',
+        'Identifying open ports...',
+        'Detecting services...',
+        'Fingerprinting operating system...',
+        'Scanning for vulnerabilities...',
+        'Generating report...',
+        'Scan completed.'
+    ],
+    'hacking': [
+        'Bypassing firewall...',
+        'Cracking encryption...',
+        'Injecting payload...',
+        'Exploiting vulnerability...',
+        'Escalating privileges...',
+        'Establishing persistence...',
+        'Covering tracks...',
+        'Access granted.'
     ]
 };
 
@@ -414,29 +480,43 @@ function updateCommandDisplay() {
 
 // Execute the current command
 function executeCommand() {
-    if (currentCommand.trim() === '') return;
+    if (terminalLocked) return;
     
     const mainTerminal = document.getElementById('main-terminal');
     const promptLine = mainTerminal.querySelector('.terminal-line:last-child');
+    const command = currentCommand.trim();
     
-    // Remove cursor from current line
-    const cursor = promptLine.querySelector('.cursor');
-    if (cursor) {
-        promptLine.removeChild(cursor);
+    if (command) {
+        // Add command to history
+        commandHistory.push(command);
+        historyIndex = commandHistory.length;
+        
+        // Create loading bar
+        const loadingBar = document.createElement('div');
+        loadingBar.className = 'loading-bar';
+        mainTerminal.appendChild(loadingBar);
+        
+        // Add command execution class
+        promptLine.classList.add('command-executing');
+        
+        // Play enter sound
+        playSound('enter');
+        
+        // Process command after delay
+        setTimeout(() => {
+            loadingBar.remove();
+            promptLine.classList.remove('command-executing');
+            processCommand(command);
+            
+            // Reset command state
+            currentCommand = '';
+            currentCommandContext = null;
+            commandFragmentsOrder = [];
+            
+            // Update command display
+            updateCommandDisplay();
+        }, Math.random() * 1000 + 500);
     }
-    
-    // Add command to history
-    commandHistory.push(currentCommand);
-    historyIndex = commandHistory.length;
-    
-    // Play enter sound
-    playSound('enter');
-    
-    // Process command
-    processCommand(currentCommand);
-    
-    // Reset current command
-    currentCommand = '';
 }
 
 // Process and display response for a command
@@ -446,16 +526,29 @@ function processCommand(command) {
     
     // Determine which response to use
     let responseLines = [];
+    let responseType = 'default';
+    
     if (command.startsWith('nmap')) {
         responseLines = responses['nmap'];
+        responseType = 'scanning';
         updateNetworkData();
     } else if (command.startsWith('ssh')) {
         responseLines = responses['ssh'];
     } else if (command.startsWith('python3')) {
         responseLines = responses['python3'];
+        responseType = 'hacking';
         setTimeout(() => {
             triggerSecurityBreach();
         }, 5000);
+    } else if (command.includes('gcc') || command.includes('make') || command.includes('javac')) {
+        responseLines = responses['compiling'];
+        responseType = 'compiling';
+    } else if (command.includes('scan') || command.includes('probe')) {
+        responseLines = responses['scanning'];
+        responseType = 'scanning';
+    } else if (command.includes('exploit') || command.includes('crack')) {
+        responseLines = responses['hacking'];
+        responseType = 'hacking';
     } else {
         responseLines = responses['default'];
     }
@@ -480,6 +573,13 @@ function processCommand(command) {
                 const lineElement = document.createElement('div');
                 lineElement.className = 'terminal-line response';
                 lineElement.id = `response-line-${lineIndex}`;
+                
+                // Add glitch effect randomly
+                if (Math.random() > 0.7) {
+                    lineElement.classList.add('glitch');
+                    lineElement.setAttribute('data-text', currentLine);
+                }
+                
                 mainTerminal.appendChild(lineElement);
             }
             
@@ -999,3 +1099,27 @@ style.textContent = `
     }
 `;
 document.head.appendChild(style);
+
+// Add matrix rain effect
+function createMatrixRain() {
+    const container = document.querySelector('.terminal-container');
+    const matrixRain = document.createElement('div');
+    matrixRain.className = 'matrix-rain';
+    container.appendChild(matrixRain);
+
+    const columns = Math.floor(container.offsetWidth / 20);
+    for (let i = 0; i < columns; i++) {
+        const column = document.createElement('div');
+        column.className = 'matrix-column';
+        column.style.left = `${i * 20}px`;
+        column.style.animationDuration = `${Math.random() * 2 + 1}s`;
+        column.style.animationDelay = `${Math.random() * 2}s`;
+        matrixRain.appendChild(column);
+    }
+}
+
+// Initialize matrix rain on load
+document.addEventListener('DOMContentLoaded', () => {
+    createMatrixRain();
+    initTerminal();
+});
